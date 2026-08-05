@@ -1,0 +1,17 @@
+{
+  "name": "my-app",
+  "type": "module",
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy --minify",
+    "cf-typegen": "wrangler types --env-interface CloudflareBindings"
+  },
+  "dependencies": {
+    "dotenv": "^17.4.2",
+    "hono": "^4.12.32",
+    "mysql2": "^3.12.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.110.0"
+  }
+}

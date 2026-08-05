@@ -1,0 +1,54 @@
+# Variables d'environnement et secrets
+.env
+.env.*
+!.env.example
+
+# Dépendances
+node_modules/
+vendor/
+.venv/
+venv/
+env/
+
+# Builds et rapports
+dist/
+build/
+out/
+target/
+.next/
+.nuxt/
+.output/
+coverage/
+
+# Caches
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.cache/
+.parcel-cache/
+.turbo/
+
+# Journaux et fichiers temporaires
+*.log
+logs/
+tmp/
+temp/
+*.tmp
+*.swp
+
+# IDE et éditeurs
+.idea/
+.vscode/
+*.iml
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Bases de données locales
+*.sqlite
+*.sqlite3
+*.db

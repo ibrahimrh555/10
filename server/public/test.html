@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Test API Players</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 700px;
+        margin: 40px auto;
+        padding: 20px;
+      }
+      form, .section {
+        border: 1px solid #ddd;
+        padding: 16px;
+        margin-bottom: 16px;
+        border-radius: 8px;
+      }
+      input, button {
+        display: block;
+        width: 100%;
+        margin-bottom: 10px;
+        padding: 8px;
+      }
+      pre {
+        background: #f5f5f5;
+        padding: 12px;
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Test API Players</h1>
+
+    <div class="section">
+      <h2>Ajouter un joueur</h2>
+      <form id="createForm">
+        <input type="text" id="name" placeholder="Nom" required />
+        <input type="number" id="age" placeholder="Âge" required />
+        <input type="text" id="position" placeholder="Position" required />
+        <button type="submit">Créer</button>
+      </form>
+    </div>
+
+    <div class="section">
+      <h2>Mettre à jour un joueur</h2>
+      <form id="updateForm">
+        <input type="number" id="updateId" placeholder="ID du joueur" required />
+        <input type="text" id="updateName" placeholder="Nouveau nom" required />
+        <input type="number" id="updateAge" placeholder="Nouvel âge" required />
+        <input type="text" id="updatePosition" placeholder="Nouvelle position" required />
+        <button type="submit">Mettre à jour</button>
+      </form>
+    </div>
+
+    <div class="section">
+      <h2>Supprimer un joueur</h2>
+      <form id="deleteForm">
+        <input type="number" id="deleteId" placeholder="ID du joueur" required />
+        <button type="submit">Supprimer</button>
+      </form>
+    </div>
+
+    <div class="section">
+      <button id="listBtn">Afficher tous les joueurs</button>
+      <pre id="result">Cliquez sur un bouton pour tester l’API.</pre>
+    </div>
+
+    <script>
+      const apiBase = 'https://my-app.my-app-brahim.workers.dev';
+      const resultBox = document.getElementById('result');
+
+      function showError(message, details) {
+        resultBox.textContent = `Erreur\n${message}\n\nDétails:\n${details}`;
+      }
+
+      async function requestJson(url, options = {}) {
+        try {
+          const res = await fetch(url, options);
+
+          if (!res.ok) {
+            const errorText = await res.text();
+            throw new Error(`HTTP ${res.status}: ${errorText}`);
+          }
+
+          return await res.json();
+        } catch (error) {
+          const message = error instanceof Error ? error.message : 'Erreur inconnue';
+          showError('Impossible de joindre l’API.', message);
+          throw error;
+        }
+      }
+
+      document.getElementById('createForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const payload = {
+          name: document.getElementById('name').value,
+          age: Number(document.getElementById('age').value),
+          position: document.getElementById('position').value,
+        };
+
+        try {
+          const data = await requestJson(`${apiBase}/players`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          resultBox.textContent = JSON.stringify(data, null, 2);
+        } catch {
+          // déjà géré dans requestJson
+        }
+      });
+
+      document.getElementById('updateForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('updateId').value;
+        const payload = {
+          name: document.getElementById('updateName').value,
+          age: Number(document.getElementById('updateAge').value),
+          position: document.getElementById('updatePosition').value,
+        };
+
+        try {
+          const data = await requestJson(`${apiBase}/players/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          resultBox.textContent = JSON.stringify(data, null, 2);
+        } catch {
+          // déjà géré dans requestJson
+        }
+      });
+
+      document.getElementById('deleteForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const id = document.getElementById('deleteId').value;
+
+        try {
+          const data = await requestJson(`${apiBase}/players/${id}`, { method: 'DELETE' });
+          resultBox.textContent = JSON.stringify(data, null, 2);
+        } catch {
+          // déjà géré dans requestJson
+        }
+      });
+
+      document.getElementById('listBtn').addEventListener('click', async () => {
+        try {
+          const data = await requestJson(`${apiBase}/players`);
+          resultBox.textContent = JSON.stringify(data, null, 2);
+        } catch {
+          // déjà géré dans requestJson
+        }
+      });
+    </script>
+  </body>
+</html>
