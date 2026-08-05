@@ -43,6 +43,9 @@ temp/
 .vscode/
 *.iml
 
+# Sauvegarde d'un ancien dépôt Git imbriqué
+.git-nested-backup/
+
 # Fichiers système
 .DS_Store
 Thumbs.db
