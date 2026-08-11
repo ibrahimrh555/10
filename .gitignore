@@ -5,48 +5,25 @@
 
 # Dépendances
 node_modules/
-vendor/
-.venv/
-venv/
-env/
+.pnpm-store/
 
-# Builds et rapports
+# Builds, rapports et caches
 dist/
 build/
-out/
-target/
-.next/
-.nuxt/
-.output/
+web-build/
+.expo/
 coverage/
-
-# Caches
-__pycache__/
-*.py[cod]
-.pytest_cache/
-.mypy_cache/
-.ruff_cache/
-.cache/
-.parcel-cache/
 .turbo/
+*.tsbuildinfo
 
 # Journaux et fichiers temporaires
 *.log
-logs/
 tmp/
 temp/
-*.tmp
-*.swp
 
-# IDE et éditeurs
+# IDE et système
 .idea/
 .vscode/
-*.iml
-
-# Sauvegarde d'un ancien dépôt Git imbriqué
-.git-nested-backup/
-
-# Fichiers système
 .DS_Store
 Thumbs.db
 Desktop.ini

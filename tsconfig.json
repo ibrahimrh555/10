@@ -1,0 +1,19 @@
+{
+  "extends": "./packages/config/tsconfig.base.json",
+  "files": [],
+  "references": [
+    { "path": "./apps/dashboard" },
+    { "path": "./apps/server" },
+    { "path": "./packages/api" },
+    { "path": "./packages/api-core" },
+    { "path": "./packages/api-games" },
+    { "path": "./packages/api-social" },
+    { "path": "./packages/api-admin" },
+    { "path": "./packages/auth" },
+    { "path": "./packages/db" },
+    { "path": "./packages/chat" },
+    { "path": "./packages/notifications" },
+    { "path": "./packages/env" },
+    { "path": "./packages/utils" }
+  ]
+}

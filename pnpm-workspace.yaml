@@ -1,0 +1,29 @@
+packages:
+  - apps/*
+  - packages/*
+
+confirmModulesPurge: false
+
+allowBuilds:
+  esbuild: true
+  workerd: true
+
+catalog:
+  '@trpc/server': ^11.0.0
+  drizzle-orm: ^0.44.0
+  zod: ^4.0.0
+
+minimumReleaseAgeExclude:
+  - '@expo/cli@57.0.14'
+  - '@expo/fingerprint@0.20.7'
+  - '@expo/inline-modules@0.1.5'
+  - '@expo/local-build-cache-provider@57.0.6'
+  - '@expo/metro-config@57.0.8'
+  - '@expo/prebuild-config@57.0.11'
+  - expo-asset@57.0.10
+  - expo-constants@57.0.10
+  - expo-server@57.0.2
+  - expo@57.0.12
+  - '@expo/metro-runtime@57.0.9'
+  - '@expo/ui@57.0.10'
+  - expo-router@57.0.12

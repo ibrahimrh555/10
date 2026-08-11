@@ -1,0 +1,39 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "compilerOptions": {
+    "allowJs": false,
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "exactOptionalPropertyTypes": true,
+    "forceConsistentCasingInFileNames": true,
+    "ignoreDeprecations": "6.0",
+    "isolatedModules": true,
+    "moduleDetection": "force",
+    "noFallthroughCasesInSwitch": true,
+    "noImplicitOverride": true,
+    "noImplicitReturns": true,
+    "noUncheckedIndexedAccess": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "target": "ES2022",
+    "useDefineForClassFields": true,
+    "verbatimModuleSyntax": true,
+    "baseUrl": "../..",
+    "paths": {
+      "@10in/api": ["packages/api/src/index.ts"],
+      "@10in/api-core": ["packages/api-core/src/index.ts"],
+      "@10in/api-games": ["packages/api-games/src/index.ts"],
+      "@10in/api-social": ["packages/api-social/src/index.ts"],
+      "@10in/api-admin": ["packages/api-admin/src/index.ts"],
+      "@10in/auth": ["packages/auth/src/index.ts"],
+      "@10in/db": ["packages/db/src/index.ts"],
+      "@10in/chat": ["packages/chat/src/index.ts"],
+      "@10in/notifications": ["packages/notifications/src/index.ts"],
+      "@10in/env": ["packages/env/src/index.ts"],
+      "@10in/utils": ["packages/utils/src/index.ts"]
+    }
+  }
+}
