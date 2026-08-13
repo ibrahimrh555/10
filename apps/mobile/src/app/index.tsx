@@ -1,11 +1,12 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
-import { ImageBackground, Pressable, StyleSheet, View } from "react-native";
+import { Image, ImageBackground, Pressable, StyleSheet, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { AppText } from "@/components/ui";
 import { theme } from "@/design-system";
 import welcomeBackground from "@/assets/images/welcome-football-pitch.png";
+import appLogo from "@/assets/images/app-logo-transparent.png";
 
 export default function WelcomeScreen() {
   return (
@@ -27,6 +28,16 @@ export default function WelcomeScreen() {
               <Ionicons name="location-outline" size={theme.sizes.icon.md} color={theme.colors.primary} />
               <AppText variant="bodySm">Matches près de vous</AppText>
             </View>
+          </View>
+
+          <View pointerEvents="none" style={styles.logoContainer}>
+            <Image
+              accessibilityIgnoresInvertColors
+              accessibilityLabel="Logo 10in"
+              resizeMode="contain"
+              source={appLogo}
+              style={styles.logo}
+            />
           </View>
 
           <View style={styles.actions}>
@@ -85,6 +96,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: theme.spacing.xxs,
     marginTop: theme.spacing.sm,
+  },
+  logoContainer: {
+    alignItems: "center",
+    flex: 1,
+    justifyContent: "center",
+  },
+
+  logo: {
+    height: 320,
+    width: "100%",
   },
   actions: { gap: theme.spacing.xs },
   button: {
