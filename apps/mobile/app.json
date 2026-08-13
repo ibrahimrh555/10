@@ -1,11 +1,23 @@
 {
   "expo": {
-    "name": "10in",
+    "name": "\u200B",
     "slug": "10in",
     "scheme": "10in",
     "version": "0.1.0",
+    "icon": "./src/assets/images/app-logo.png",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./src/assets/images/app-logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#FAFAF6"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./src/assets/images/app-logo.png",
+        "backgroundColor": "#FAFAF6"
+      }
+    },
     "plugins": ["expo-router"],
     "experiments": {
       "typedRoutes": true

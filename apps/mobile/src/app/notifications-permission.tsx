@@ -1,0 +1,9 @@
+import { router } from "expo-router";
+import { StyleSheet, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { AppButton, AppHeader, AppText, ScreenContainer, ScreenTitle } from "@/components/ui";
+import { theme } from "@/design-system";
+const benefits=[{icon:"calendar-outline",title:"Rappels de match",text:"Soyez averti avant le coup d’envoi."},{icon:"chatbubble-ellipses-outline",title:"Nouveaux messages",text:"Ne manquez aucun message important."},{icon:"people-outline",title:"Places disponibles",text:"Soyez le premier informé des créneaux."}] as const;
+export default function NotificationPermissionScreen(){return <ScreenContainer footer={<View style={styles.buttons}><AppButton label="Activer les notifications" onPress={()=>router.replace("/home")}/><AppButton label="Plus tard" variant="secondary" onPress={()=>router.replace("/home")}/></View>}><AppHeader/><ScreenTitle dark="Ne manquez" accent="aucun match" description="Activez les notifications pour rester informé de vos matchs et opportunités de jeu."/><View style={styles.bell}><Ionicons name="notifications-outline" size={76} color={theme.colors.textPrimary}/></View><View style={styles.list}>{benefits.map(item=><View key={item.title} style={styles.row}><Ionicons name={item.icon} size={30} color={theme.colors.textPrimary}/><View style={styles.copy}><AppText variant="headingSm">{item.title}</AppText><AppText variant="bodySm" color="textSecondary">{item.text}</AppText></View></View>)}</View></ScreenContainer>}
+const styles=StyleSheet.create({bell:{alignItems:"center",backgroundColor:theme.colors.surface,borderRadius:theme.radius.full,height:150,justifyContent:"center",marginBottom:theme.spacing.xl,marginHorizontal:"auto",width:150},list:{gap:theme.spacing.lg},row:{alignItems:"center",flexDirection:"row",gap:theme.spacing.md},copy:{flex:1},buttons:{gap:theme.spacing.sm}});
+

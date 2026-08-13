@@ -18,6 +18,7 @@
   "dependencies": {
     "@10in/env": "workspace:*",
     "@expo/metro-runtime": "~57.0.9",
+    "@expo/vector-icons": "^15.1.1",
     "expo": "~57.0.12",
     "expo-router": "~57.0.12",
     "expo-status-bar": "~57.0.0",

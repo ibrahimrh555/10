@@ -1,11 +1,23 @@
 {
-  "extends": ["expo/tsconfig.base", "../../packages/config/tsconfig.expo.json"],
+  "extends": [
+    "expo/tsconfig.base",
+    "../../packages/config/tsconfig.expo.json"
+  ],
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@/*": ["src/*"],
-      "@10in/*": ["../../packages/*/src"]
+      "@/*": [
+        "src/*"
+      ],
+      "@10in/*": [
+        "../../packages/*/src"
+      ]
     }
   },
-  "include": ["src/**/*.ts", "src/**/*.tsx", "expo-env.d.ts", ".expo/types/**/*.ts"]
+  "include": [
+    "src/**/*.ts",
+    "src/**/*.tsx",
+    "expo-env.d.ts",
+    ".expo/types/**/*.ts"
+  ]
 }
