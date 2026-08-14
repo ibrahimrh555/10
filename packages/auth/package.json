@@ -3,7 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "exports": { ".": "./src/index.ts" },
+  "exports": {
+    ".": "./src/index.ts"
+  },
   "scripts": {
     "build": "tsc -p tsconfig.build.json",
     "lint": "eslint .",
@@ -11,5 +13,9 @@
     "test": "vitest run --passWithNoTests",
     "clean": "rimraf dist .tsbuildinfo"
   },
-  "dependencies": { "zod": "catalog:" }
+  "dependencies": {
+    "@10in/db": "workspace:*",
+    "better-auth": "1.6.23",
+    "zod": "catalog:"
+  }
 }
