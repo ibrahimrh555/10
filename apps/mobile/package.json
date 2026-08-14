@@ -17,17 +17,23 @@
   },
   "dependencies": {
     "@10in/env": "workspace:*",
+    "@better-auth/expo": "^1.6.23",
     "@expo/metro-runtime": "~57.0.9",
     "@expo/vector-icons": "^15.1.1",
+    "@trpc/client": "^11.18.0",
+    "better-auth": "1.6.23",
     "expo": "~57.0.12",
+    "expo-network": "^57.0.1",
     "expo-router": "~57.0.12",
+    "expo-secure-store": "^57.0.1",
     "expo-status-bar": "~57.0.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "react-native": "0.86.2",
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "~4.26.0",
-    "react-native-web": "^0.21.0"
+    "react-native-web": "^0.21.0",
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@types/react": "^19.0.0",

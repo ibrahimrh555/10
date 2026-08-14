@@ -15,7 +15,13 @@
   },
   "dependencies": {
     "@10in/db": "workspace:*",
+    "@better-auth/expo": "^1.6.23",
     "better-auth": "1.6.23",
+    "resend": "^6.20.0",
     "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "drizzle-orm": "catalog:"
   }
 }

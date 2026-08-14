@@ -11,7 +11,7 @@ allowBuilds:
 catalog:
   '@trpc/server': ^11.0.0
   drizzle-orm: ^0.44.0
-  zod: ^4.0.0
+  zod: ^4.4.3
 
 minimumReleaseAgeExclude:
   - '@expo/cli@57.0.14'
