@@ -8,17 +8,32 @@
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./src/assets/images/app-logo.png",
+      "image": "./src/assets/images/app-logo-transparent.png",
       "resizeMode": "contain",
       "backgroundColor": "#FAFAF6"
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./src/assets/images/app-logo.png",
+        "foregroundImage": "./src/assets/images/app-logo-transparent.png",
         "backgroundColor": "#FAFAF6"
       }
     },
-    "plugins": ["expo-router"],
+    "plugins": [
+      [
+        "onesignal-expo-plugin",
+        {
+          "mode": "development"
+        }
+      ],
+      "expo-router",
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "Autorisez 10in à accéder à vos photos pour choisir une photo de profil.",
+          "microphonePermission": false
+        }
+      ]
+    ],
     "experiments": {
       "typedRoutes": true
     },

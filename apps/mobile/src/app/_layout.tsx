@@ -4,6 +4,8 @@ import { theme } from "@/design-system";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/trpc";
 import { useAuthGuard } from "@/hooks/use-auth-guard";
+import { initializeOneSignal } from "@/lib/one-signal";
+import { useEffect } from "react";
 
 function Routes() {
   useAuthGuard();
@@ -11,5 +13,6 @@ function Routes() {
 }
 
 export default function RootLayout() {
+  useEffect(() => { void initializeOneSignal(); }, []);
   return <QueryClientProvider client={queryClient}><StatusBar style="dark" /><Routes /></QueryClientProvider>;
 }
