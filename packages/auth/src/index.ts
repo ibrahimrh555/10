@@ -3,6 +3,7 @@ import { betterAuth } from "better-auth/minimal";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin, emailOTP } from "better-auth/plugins";
 import { adminAc, userAc } from "better-auth/plugins/admin/access";
+import { expo } from "@better-auth/expo";
 import { type Database, schema, verification } from "@10in/db";
 import { eq } from "drizzle-orm";
 import { DevelopmentEmailOtpProvider, type EmailOtpProvider, ResendEmailOtpProvider } from "./providers";
@@ -57,6 +58,7 @@ export function createAuth(options: AuthOptions): AuthInstance {
       },
     },
     plugins: [
+      expo(),
       admin({ defaultRole: "user", adminRoles: ["admin", "superadmin"], roles: { user: userAc, admin: adminAc, superadmin: adminAc } }),
       emailOTP({ otpLength: 6, expiresIn: 600, allowedAttempts: 5, storeOTP: "hashed", disableSignUp: false, resendStrategy: "rotate", rateLimit: { window: 60, max: 10 }, sendVerificationOTP: async ({ email, otp }) => { const delivery = provider.sendCode({ email: email.trim().toLowerCase(), code: otp, expiresInMinutes: 10 }); if (options.defer) { options.defer(delivery.catch((error: unknown) => { console.error(JSON.stringify({ event: "email_otp_delivery_failed", message: error instanceof Error ? error.message : "unknown" })); })); return; } await delivery; } }),
     ],

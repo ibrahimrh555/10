@@ -1,4 +1,5 @@
 import { createDatabase } from "./client";
+import { pathToFileURL } from "node:url";
 import { badges, circleMembers, circles, cities, clubs, connectionRequests, gameCircles, gameFormats, gamePlayers, games, notificationPreferences, notifications, user, userBadges, userConnections, userTracking } from "./schema";
 
 const cityData = [
@@ -35,4 +36,10 @@ export async function seed(url = process.env.DATABASE_URL ?? "file:./local.db") 
   client.close();
 }
 
-if (import.meta.url === `file://${process.argv[1]?.replaceAll("\\", "/")}`) await seed();
+const entryPath = process.argv[1];
+if (entryPath && import.meta.url === pathToFileURL(entryPath).href) {
+  seed().catch((error: unknown) => {
+    console.error(error);
+    process.exitCode = 1;
+  });
+}

@@ -48,6 +48,9 @@ app.all("/trpc/*", async (context) => {
   }); } finally { client.close(); }
 });
 
-app.onError((error, context) => { console.error(JSON.stringify({ event: "request_failed", path: context.req.path, message: error.message })); return context.json({ error: "Une erreur interne est survenue" }, 500); });
+app.onError((error, context) => {
+  console.error(JSON.stringify({ event: "request_failed", path: context.req.path, message: error.message }));
+  return context.json({ error: "Une erreur interne est survenue", ...(context.env.NODE_ENV === "development" ? { detail: error.message } : {}) }, 500);
+});
 
 export default app;

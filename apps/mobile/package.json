@@ -16,10 +16,12 @@
     "clean": "rimraf .expo web-build dist"
   },
   "dependencies": {
+    "@10in/api": "workspace:*",
     "@10in/env": "workspace:*",
     "@better-auth/expo": "^1.6.23",
     "@expo/metro-runtime": "~57.0.9",
     "@expo/vector-icons": "^15.1.1",
+    "@tanstack/react-query": "^5.101.4",
     "@trpc/client": "^11.18.0",
     "better-auth": "1.6.23",
     "expo": "~57.0.12",
@@ -29,6 +31,7 @@
     "expo-status-bar": "~57.0.0",
     "react": "19.2.3",
     "react-dom": "19.2.3",
+    "react-hook-form": "^7.85.0",
     "react-native": "0.86.2",
     "react-native-safe-area-context": "~5.7.0",
     "react-native-screens": "~4.26.0",
