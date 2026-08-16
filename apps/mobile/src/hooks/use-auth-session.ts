@@ -17,6 +17,7 @@ export function useAuthSession() {
     session: query.data?.session ?? null,
     user: query.data?.user ?? null,
     isPending: query.isPending,
+    isError: query.isError,
     isAuthenticated: Boolean(query.data?.session),
     refetchSession: query.refetch,
     signOut: async () => {
