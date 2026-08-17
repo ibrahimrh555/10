@@ -3,7 +3,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { theme } from "@/design-system";
 import { AppText } from "./AppText";
 
-type Props = { label: string; onPress: () => void; variant?: "primary" | "secondary" | "ghost"; disabled?: boolean; loading?: boolean; icon?: keyof typeof Ionicons.glyphMap };
+type Props = { label: string; onPress: () => void; variant?: "primary" | "secondary" | "ghost"; disabled?: boolean; loading?: boolean; icon?: keyof typeof Ionicons.glyphMap | undefined };
 
 export function AppButton({ label, onPress, variant = "primary", disabled, loading, icon }: Props) {
   const filled = variant === "primary";
@@ -27,4 +27,3 @@ const styles = StyleSheet.create({
   pressed: { opacity: 0.78, transform: [{ scale: 0.99 }] },
   disabled: { backgroundColor: theme.colors.disabled, opacity: 0.8 },
 });
-

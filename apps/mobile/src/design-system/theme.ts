@@ -13,8 +13,11 @@ export const theme = {
     border: palette.green950,
     borderSubtle: palette.neutral200,
     success: palette.green500,
+    successSubtle: palette.green100,
     warning: palette.yellow500,
     danger: palette.red500,
+    dangerSubtle: "#FFE7E7",
+    overlay: "rgba(0, 0, 0, 0.42)",
     disabled: palette.neutral200,
     disabledText: palette.neutral400,
   },
@@ -26,4 +29,3 @@ export const theme = {
 } as const;
 
 export type AppTheme = typeof theme;
-

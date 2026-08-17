@@ -1,12 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
-import { router, usePathname } from "expo-router";
+import { router, usePathname, type Href } from "expo-router";
 import { useEffect } from "react";
 
 import { queryKeys, trpcClient } from "@/lib/trpc";
 import { useAuthSession } from "./use-auth-session";
+import { resolveAuthenticatedRoute } from "./auth-route";
 
 const publicRoutes = new Set(["/", "/sign-in", "/otp"]);
-const stepRoute = { NAME: "/name", PHOTO: "/photo", NOTIFICATIONS: "/notifications-permission", COMPLETED: "/home" } as const;
 
 export function useAuthGuard() {
   const pathname = usePathname();
@@ -23,11 +23,11 @@ export function useAuthGuard() {
       if (!publicRoutes.has(pathname)) router.replace("/");
       return;
     }
-    const target = stepRoute[onboarding.data?.nextStep ?? "NAME"];
-    if (pathname !== target) router.replace(target);
+    const target = resolveAuthenticatedRoute(pathname, onboarding.data?.nextStep ?? "NAME");
+    if (pathname !== target) router.replace(target as Href);
   }, [auth.isAuthenticated, auth.isError, auth.isPending, onboarding.data?.nextStep, onboarding.isError, onboarding.isPending, pathname]);
 
-  const target = auth.isAuthenticated ? stepRoute[onboarding.data?.nextStep ?? "NAME"] : publicRoutes.has(pathname) ? pathname : "/";
+  const target = auth.isAuthenticated ? resolveAuthenticatedRoute(pathname, onboarding.data?.nextStep ?? "NAME") : publicRoutes.has(pathname) ? pathname : "/";
   const isChecking = auth.isPending || (auth.isAuthenticated && onboarding.isPending) || pathname !== target;
 
   return {
