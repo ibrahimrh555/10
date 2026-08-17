@@ -4,8 +4,8 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { admin, emailOTP } from "better-auth/plugins";
 import { adminAc, userAc } from "better-auth/plugins/admin/access";
 import { expo } from "@better-auth/expo";
-import { type Database, schema, verification } from "@10in/db";
-import { eq } from "drizzle-orm";
+import { type Database, schema, user, verification } from "@10in/db";
+import { and, eq, isNull } from "drizzle-orm";
 import { DevelopmentEmailOtpProvider, type EmailOtpProvider, ResendEmailOtpProvider } from "./providers";
 
 export * from "./providers";
@@ -30,10 +30,16 @@ async function normalizeEmailRequest(request: Request, db: Database): Promise<Re
   if (!body || typeof body !== "object" || !("email" in body) || typeof body.email !== "string") return request;
   const email = body.email.trim().toLowerCase();
   if (path.endsWith("/email-otp/send-verification-otp")) {
+    if ("intent" in body && body.intent === "login") {
+      const existingUser = (await db.select({ id: user.id }).from(user).where(and(eq(user.email, email), isNull(user.deletedAt))).limit(1))[0];
+      if (!existingUser) return Response.json({ code: "ACCOUNT_NOT_FOUND", message: "Aucun compte ne correspond à cette adresse e-mail" }, { status: 404 });
+    }
     const recent = (await db.select({ createdAt: verification.createdAt }).from(verification).where(eq(verification.identifier, `sign-in-otp-${email}`)).limit(1))[0];
     if (recent && Date.now() - recent.createdAt.getTime() < 60_000) return Response.json({ message: "Veuillez patienter avant de demander un nouveau code" }, { status: 429 });
   }
-  return new Request(request, { body: JSON.stringify({ ...body, email }) });
+  const normalizedBody: Record<string, unknown> = { ...body, email };
+  delete normalizedBody.intent;
+  return new Request(request, { body: JSON.stringify(normalizedBody) });
 }
 
 export interface AuthInstance { handler(request: Request): Promise<Response>; getSession(headers: Headers): Promise<AuthSession | null> }

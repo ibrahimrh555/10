@@ -1,7 +1,7 @@
 import { randomUUID } from "node:crypto";
 import { unlink } from "node:fs/promises";
 import { resolve } from "node:path";
-import { createDatabase, verification } from "@10in/db";
+import { createDatabase, user, verification } from "@10in/db";
 import { eq } from "drizzle-orm";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { afterAll, beforeAll, describe, expect, it } from "vitest";
@@ -22,6 +22,8 @@ afterAll(async () => { database.client.close(); await unlink(file).catch(() => u
 
 describe("Email OTP BetterAuth flow", () => {
   it("rejects invalid email", async () => { expect((await request("/email-otp/send-verification-otp", { email: "invalid", type: "sign-in" }, { "x-forwarded-for": "192.0.2.1" })).status).toBe(400); });
+  it("rejects login when the email is absent from the user table", async () => { const response = await request("/email-otp/send-verification-otp", { email: "missing@example.test", type: "sign-in", intent: "login" }, { "x-forwarded-for": "192.0.2.30" }); expect(response.status).toBe(404); expect(await response.json()).toMatchObject({ code: "ACCOUNT_NOT_FOUND" }); expect(codes.has("missing@example.test")).toBe(false); });
+  it("allows login when the normalized email exists in the user table", async () => { await database.db.insert(user).values({ id: "existing-login-user", name: "Existing", email: "existing@example.test" }); const response = await request("/email-otp/send-verification-otp", { email: " Existing@Example.TEST ", type: "sign-in", intent: "login" }, { "x-forwarded-for": "192.0.2.31" }); expect(response.status).toBe(200); expect(codes.get("existing@example.test")).toMatch(/^\d{6}$/); });
   it("normalizes email and sends a six-digit code", async () => { const response = await request("/email-otp/send-verification-otp", { email: "  New.User@Example.TEST ", type: "sign-in" }, { "x-forwarded-for": "192.0.2.2" }); expect(response.status).toBe(200); expect(codes.get("new.user@example.test")).toMatch(/^\d{6}$/); });
   it("prevents resend inside 60 seconds", async () => { expect((await request("/email-otp/send-verification-otp", { email: "new.user@example.test", type: "sign-in" }, { "x-forwarded-for": "192.0.2.2" })).status).toBe(429); });
   it("rejects an incorrect OTP", async () => { expect((await request("/sign-in/email-otp", { email: "new.user@example.test", otp: "000000" })).status).toBe(400); });

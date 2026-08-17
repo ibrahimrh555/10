@@ -36,7 +36,7 @@ export default function SignInScreen() {
   const schema = isSignup ? signupSchema : loginSchema;
   const valid = useMemo(() => schema.safeParse({ email, cityId }).success, [cityId, email, schema]);
   const sendOtp = useMutation({
-    mutationFn: async (values: FormValues) => { const result = await authClient.emailOtp.sendVerificationOtp({ email: values.email, type: "sign-in" }); if (result.error) throw result.error; return values; },
+    mutationFn: async (values: FormValues) => { const result = await authClient.emailOtp.sendVerificationOtp({ email: values.email, type: "sign-in", intent } as Parameters<typeof authClient.emailOtp.sendVerificationOtp>[0] & { intent: "login" | "signup" }); if (result.error) throw result.error; return values; },
     onSuccess(values) { pendingAuthStore.setPendingAuth(values.email, isSignup ? values.cityId : null, intent, Date.now()); router.push("/otp"); },
     onError(error) { if (__DEV__) console.warn("email_otp_request_failed", { category: "request_failed" }); Alert.alert("Code non envoyé", authErrorMessage(error as never, "send")); },
   });
