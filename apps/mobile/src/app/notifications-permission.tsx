@@ -1,21 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useMutation } from "@tanstack/react-query";
 import { router } from "expo-router";
-import { Platform, StyleSheet, View } from "react-native";
-
-import { AppButton, AppHeader, AppText, ScreenContainer, ScreenTitle } from "@/components/ui";
-import { theme } from "@/design-system";
+import { ActivityIndicator, Platform, Pressable, StyleSheet, View } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { AppText } from "@/components/ui";
 import { useAuthSession } from "@/hooks/use-auth-session";
 import { onboardingErrorMessage, onboardingQueryKeys } from "@/lib/onboarding";
 import { completeNotificationOnboarding } from "@/lib/notification-onboarding";
 import { requestOneSignalRegistration } from "@/lib/one-signal";
 import { queryClient, trpcClient } from "@/lib/trpc";
-
-const benefits = [
-  { icon: "calendar-outline", title: "Rappels de match", text: "Soyez averti avant le coup d’envoi." },
-  { icon: "chatbubble-ellipses-outline", title: "Nouveaux messages", text: "Ne manquez aucun message important." },
-  { icon: "people-outline", title: "Places disponibles", text: "Soyez le premier informé des créneaux." },
-] as const;
 
 export default function NotificationPermissionScreen() {
   const { user } = useAuthSession();
@@ -41,15 +34,24 @@ export default function NotificationPermissionScreen() {
   });
   const error = flow.error ? onboardingErrorMessage(flow.error, "Certaines informations sont manquantes. Veuillez réessayer.") : null;
 
-  return (
-    <ScreenContainer footer={<View style={styles.buttons}><AppButton disabled={flow.isPending} loading={flow.isPending && flow.variables === true} label="Activer les notifications" onPress={() => flow.mutate(true)} /><AppButton disabled={flow.isPending} loading={flow.isPending && flow.variables === false} label="Plus tard" variant="secondary" onPress={() => flow.mutate(false)} /></View>}>
-      <AppHeader />
-      <ScreenTitle dark="Ne manquez" accent="aucun match" description="Activez les notifications pour rester informé de vos matchs et opportunités de jeu." />
-      <View style={styles.bell}><Ionicons name="notifications-outline" size={76} color={theme.colors.textPrimary} /></View>
-      <View style={styles.list}>{benefits.map(item => <View key={item.title} style={styles.row}><Ionicons name={item.icon} size={30} color={theme.colors.textPrimary} /><View style={styles.copy}><AppText variant="headingSm">{item.title}</AppText><AppText variant="bodySm" color="textSecondary">{item.text}</AppText></View></View>)}</View>
-      {error ? <AppText color="danger" variant="bodySm" style={styles.error}>{error}</AppText> : null}
-    </ScreenContainer>
-  );
+  return <SafeAreaView style={styles.safe}><View style={styles.content}>
+    <View style={styles.bellHalo}><View style={styles.bellInner}><Ionicons color="#0A3828" name="notifications-outline" size={37} /></View></View>
+    <AppText variant="displayLg" style={styles.title}>RESTE INFORMÉ</AppText>
+    <AppText style={styles.description}>Reçois des alertes instantanées dès qu’un match{"\n"}se crée près de chez toi, ou pour suivre les{"\n"}messages de ton équipe.</AppText>
+    {error ? <AppText color="danger" style={styles.error} variant="bodySm">{error}</AppText> : null}
+    <Pressable accessibilityRole="button" disabled={flow.isPending} onPress={() => flow.mutate(true)} style={({ pressed }) => [styles.button, pressed && styles.pressed]}>{flow.isPending && flow.variables === true ? <ActivityIndicator color="#FFFFFF" /> : <AppText style={styles.buttonLabel}>Autoriser les notifications</AppText>}</Pressable>
+    <Pressable accessibilityRole="button" disabled={flow.isPending} onPress={() => flow.mutate(false)} style={styles.later}><AppText style={styles.laterText}>{flow.isPending && flow.variables === false ? "Chargement…" : "Plus tard"}</AppText></Pressable>
+  </View></SafeAreaView>;
 }
 
-const styles = StyleSheet.create({ bell: { alignItems: "center", backgroundColor: theme.colors.surface, borderRadius: theme.radius.full, height: 150, justifyContent: "center", marginBottom: theme.spacing.xl, marginHorizontal: "auto", width: 150 }, list: { gap: theme.spacing.lg }, row: { alignItems: "center", flexDirection: "row", gap: theme.spacing.md }, copy: { flex: 1 }, buttons: { gap: theme.spacing.sm }, error: { marginTop: theme.spacing.lg, textAlign: "center" } });
+const styles = StyleSheet.create({
+  safe: { backgroundColor: "#F7F6EF", flex: 1 }, content: { alignItems: "center", flex: 1, paddingHorizontal: 24 },
+  bellHalo: { alignItems: "center", backgroundColor: "#DDF3E4", borderRadius: 61, height: 122, justifyContent: "center", marginTop: 75, width: 122 },
+  bellInner: { alignItems: "center", backgroundColor: "#FFFFFF", borderColor: "#11D86C", borderRadius: 40, borderWidth: 2, height: 80, justifyContent: "center", width: 80 },
+  title: { color: "#0A3828", fontSize: 40, lineHeight: 49, marginTop: 39, textAlign: "center" },
+  description: { color: "#65736D", fontSize: 15.5, lineHeight: 22, marginTop: 10, textAlign: "center" },
+  error: { marginTop: 12, textAlign: "center" },
+  button: { alignItems: "center", alignSelf: "stretch", backgroundColor: "#0A3828", borderRadius: 12, justifyContent: "center", marginTop: 41, minHeight: 53 },
+  buttonLabel: { color: "#FFFFFF", fontSize: 16, fontWeight: "700" }, pressed: { opacity: 0.82, transform: [{ scale: 0.99 }] },
+  later: { alignItems: "center", minHeight: 44, paddingTop: 16 }, laterText: { color: "#5F6E67", fontSize: 14, fontWeight: "600", textDecorationLine: "underline" },
+});
