@@ -2,7 +2,7 @@ export const onboardingStepRoute = { NAME: "/name", PHOTO: "/photo", NOTIFICATIO
 export type OnboardingStep = keyof typeof onboardingStepRoute;
 
 function isCompletedAppRoute(pathname: string) {
-  return pathname === "/home" || pathname === "/explore" || pathname.startsWith("/games/");
+  return pathname === "/home" || pathname === "/explore" || pathname === "/city" || pathname.startsWith("/games/");
 }
 
 export function resolveAuthenticatedRoute(pathname: string, nextStep: OnboardingStep) {
