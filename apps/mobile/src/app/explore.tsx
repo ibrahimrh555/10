@@ -1,26 +1,41 @@
 import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import { useMemo, useState } from "react";
-import { FlatList, Pressable, RefreshControl, StyleSheet, TextInput, View } from "react-native";
+import { FlatList, Pressable, StyleSheet, TextInput, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { AppText, BottomNavigation } from "@/components/ui";
-import { theme } from "@/design-system";
-import { EmptyMatchesState, ExploreErrorState, ExploreFiltersSheet, ExploreMatchCard, FilterChip, MatchCardSkeleton } from "@/features/explore/components";
+import { ExploreFiltersSheet, ExploreMatchCard, FilterChip } from "@/features/explore/components";
 import { activeFilterCount, DEFAULT_EXPLORE_FILTERS, filterGames, type ExploreFilters } from "@/features/explore/filters";
 import { mockGames } from "@/mocks/games";
 
-type DemoState = "data" | "loading" | "error" | "empty";
-const EXPLORE_DEMO_STATE: DemoState = "data";
-
 export default function ExploreScreen() {
-  const [query, setQuery] = useState(""); const [filters, setFilters] = useState<ExploreFilters>(DEFAULT_EXPLORE_FILTERS); const [draft, setDraft] = useState(filters); const [sheetOpen, setSheetOpen] = useState(false); const [refreshing, setRefreshing] = useState(false); const [state, setState] = useState<DemoState>(EXPLORE_DEMO_STATE);
-  const games = useMemo(() => filterGames(state === "empty" ? [] : mockGames, query, filters), [filters, query, state]);
-  const draftCount = useMemo(() => filterGames(mockGames, query, draft).length, [draft, query]);
+  const [query, setQuery] = useState("");
+  const [filters, setFilters] = useState<ExploreFilters>(DEFAULT_EXPLORE_FILTERS);
+  const [draft, setDraft] = useState(filters);
+  const [sheetOpen, setSheetOpen] = useState(false);
+  const [showResults, setShowResults] = useState(false);
+  const games = useMemo(() => filterGames(mockGames, query, filters), [filters, query]);
   const openFilters = () => { setDraft(filters); setSheetOpen(true); };
-  const reset = () => { setQuery(""); setFilters({ ...DEFAULT_EXPLORE_FILTERS, period: "all" }); setState("data"); };
-  const refresh = () => { setRefreshing(true); setState("data"); requestAnimationFrame(() => setRefreshing(false)); };
-  const loading = state === "loading";
-  return <SafeAreaView style={styles.safe}><View style={styles.page}><View style={styles.header}><View><AppText variant="displayMd" style={styles.title}>TROUVER</AppText><AppText variant="displayMd" color="primary" style={styles.titleAccent}>UN MATCH</AppText></View><Pressable accessibilityLabel="Ouvrir tous les filtres" accessibilityRole="button" onPress={openFilters} style={styles.filterButton}><Ionicons name="options-outline" size={24} color={theme.colors.textPrimary} />{activeFilterCount(filters) ? <View style={styles.count}><AppText variant="caption" color="textInverse">{activeFilterCount(filters)}</AppText></View> : null}</Pressable></View><View style={styles.location}><Ionicons name="location-outline" size={18} color={theme.colors.primary} /><AppText variant="bodySm">{filters.city}</AppText><Pressable onPress={openFilters}><AppText variant="bodySm" color="primaryPressed">Changer</AppText></Pressable></View><View style={styles.search}><Ionicons name="search-outline" size={18} color={theme.colors.textSecondary} /><TextInput accessibilityLabel="Rechercher un club ou un terrain" onChangeText={setQuery} placeholder="Rechercher un club ou un terrain" placeholderTextColor={theme.colors.textSecondary} returnKeyType="search" style={styles.input} value={query} /></View><FlatList data={loading ? [] : games} keyExtractor={(item) => item.id} keyboardShouldPersistTaps="handled" refreshControl={<RefreshControl refreshing={refreshing} onRefresh={refresh} tintColor={theme.colors.primary} />} renderItem={({ item }) => <ExploreMatchCard game={item} onPress={() => router.push({ pathname: "/games/[gameId]", params: { gameId: item.id } })} />} contentContainerStyle={[styles.list, !games.length && styles.emptyList]} ListHeaderComponent={<View style={styles.quickFilters}><FilterChip label="Aujourd’hui" selected={filters.period === "today"} onPress={() => setFilters({ ...filters, period: "today" })} /><FilterChip label="Demain" selected={filters.period === "tomorrow"} onPress={() => setFilters({ ...filters, period: "tomorrow" })} /><FilterChip label="Cette semaine" selected={filters.period === "week"} onPress={() => setFilters({ ...filters, period: "week" })} /><FilterChip label="Gratuit" selected={filters.freeOnly} onPress={() => setFilters({ ...filters, freeOnly: !filters.freeOnly })} /><FilterChip label="Places disponibles" selected={filters.availableOnly} onPress={() => setFilters({ ...filters, availableOnly: !filters.availableOnly })} /></View>} ListEmptyComponent={loading ? <View style={styles.skeletons}><MatchCardSkeleton /><MatchCardSkeleton /><MatchCardSkeleton /></View> : state === "error" ? <ExploreErrorState onRetry={() => setState("data")} /> : <EmptyMatchesState filtered={Boolean(query || activeFilterCount(filters))} onReset={reset} />} showsHorizontalScrollIndicator={false} showsVerticalScrollIndicator={false} /></View><View style={styles.footer}><BottomNavigation active="Explorer" /></View><ExploreFiltersSheet visible={sheetOpen} value={draft} resultCount={draftCount} onChange={setDraft} onClose={() => setSheetOpen(false)} onApply={() => { setFilters(draft); setSheetOpen(false); }} /></SafeAreaView>;
+  const removeCity = () => setFilters({ ...filters, city: "" });
+  const removeFormat = (format: ExploreFilters["formats"][number]) => setFilters({ ...filters, formats: filters.formats.filter(item => item !== format) });
+  return <SafeAreaView style={styles.safe}><View style={styles.page}>
+    {showResults ? <View style={styles.resultsHeader}><Pressable accessibilityLabel="Retour" hitSlop={12} onPress={() => setShowResults(false)}><Ionicons color="#123C2D" name="arrow-back" size={25} /></Pressable><View><AppText variant="displayMd" style={styles.resultsTitle}>RÉSULTATS</AppText><AppText style={styles.resultsCount}>{games.length} matchs correspondent à tes filtres</AppText></View></View> : <AppText variant="displayLg" style={styles.title}>MATCHS DISPONIBLES</AppText>}
+    {showResults ? <View style={styles.activeFilters}>{filters.city ? <FilterChip label={filters.city + "  ×"} selected onPress={removeCity} /> : null}{filters.formats.map(format => <FilterChip key={format} label={format + "  ×"} selected onPress={() => removeFormat(format)} />)}</View> : <View style={styles.searchRow}><View style={styles.search}><Ionicons color="#65736D" name="search-outline" size={22} /><TextInput onChangeText={setQuery} placeholder="Trouver un terrain..." placeholderTextColor="#9AA8A1" style={styles.input} value={query} /></View><Pressable accessibilityLabel="Filtres" accessibilityRole="button" onPress={openFilters} style={styles.filterButton}><Ionicons color="#16E276" name="options-outline" size={24} />{activeFilterCount(filters) ? <View style={styles.count}><AppText style={styles.countText}>{activeFilterCount(filters)}</AppText></View> : null}</Pressable></View>}
+    <FlatList contentContainerStyle={styles.list} data={games} keyExtractor={item => item.id} renderItem={({ item }) => <ExploreMatchCard game={item} onPress={() => router.push({ pathname: "/games/[gameId]", params: { gameId: item.id } })} />} showsVerticalScrollIndicator={false} />
+    <BottomNavigation active="Matchs" />
+    <ExploreFiltersSheet visible={sheetOpen} value={draft} resultCount={games.length} onChange={setDraft} onClose={() => setSheetOpen(false)} onApply={() => { setFilters(draft); setSheetOpen(false); setShowResults(true); }} />
+  </View></SafeAreaView>;
 }
 
-const styles = StyleSheet.create({ safe: { backgroundColor: theme.colors.background, flex: 1 }, page: { flex: 1, paddingHorizontal: theme.spacing.md }, header: { alignItems: "flex-start", flexDirection: "row", justifyContent: "space-between", paddingTop: theme.spacing.xs }, title: { lineHeight: 30 }, titleAccent: { lineHeight: 30, marginTop: -2 }, filterButton: { alignItems: "center", borderColor: theme.colors.borderSubtle, borderRadius: theme.radius.full, borderWidth: 1, height: 44, justifyContent: "center", position: "relative", width: 44 }, count: { alignItems: "center", backgroundColor: theme.colors.primaryPressed, borderRadius: 9, height: 18, justifyContent: "center", position: "absolute", right: -2, top: -2, width: 18 }, location: { alignItems: "center", flexDirection: "row", gap: 6, marginVertical: 8 }, search: { alignItems: "center", backgroundColor: theme.colors.surface, borderColor: theme.colors.borderSubtle, borderRadius: theme.radius.md, borderWidth: 1, flexDirection: "row", minHeight: 44, paddingHorizontal: 12 }, input: { color: theme.colors.textPrimary, flex: 1, fontSize: 14, height: 44, marginLeft: 8 }, quickFilters: { flexDirection: "row", gap: 7, marginBottom: 8 }, list: { gap: 6, paddingBottom: 12, paddingTop: 8 }, emptyList: { flexGrow: 1 }, skeletons: { gap: 8 }, footer: { paddingBottom: theme.spacing.sm, paddingHorizontal: theme.spacing.md, paddingTop: 6 } });
+const styles = StyleSheet.create({
+  safe: { backgroundColor: "#F7F6EF", flex: 1 }, page: { flex: 1 },
+  title: { color: "#0A3828", fontSize: 30, lineHeight: 49, marginHorizontal: 24, marginTop: 31 },
+  searchRow: { flexDirection: "row", gap: 12, marginHorizontal: 24, marginTop: 17 },
+  search: { alignItems: "center", backgroundColor: "#FFFFFF", borderColor: "#DDDCD4", borderRadius: 12, borderWidth: 1, flex: 1, flexDirection: "row", minHeight: 49, paddingHorizontal: 13 },
+  input: { color: "#173B2D", flex: 1, fontSize: 14, marginLeft: 8, minHeight: 47 },
+  filterButton: { alignItems: "center", backgroundColor: "#0A3828", borderRadius: 12, height: 49, justifyContent: "center", position: "relative", width: 49 },
+  count: { alignItems: "center", backgroundColor: "#16E276", borderRadius: 8, height: 16, justifyContent: "center", position: "absolute", right: -3, top: -3, width: 16 }, countText: { color: "#0A3828", fontSize: 10, fontWeight: "800" },
+  list: { paddingBottom: 12, paddingHorizontal: 24, paddingTop: 19 },
+  resultsHeader: { alignItems: "center", flexDirection: "row", gap: 12, marginHorizontal: 24, marginTop: 30 }, resultsTitle: { color: "#0A3828", fontSize: 31, lineHeight: 35 }, resultsCount: { color: "#65736D", fontSize: 13, marginTop: 1 },
+  activeFilters: { flexDirection: "row", gap: 8, marginHorizontal: 24, marginTop: 18 },
+});

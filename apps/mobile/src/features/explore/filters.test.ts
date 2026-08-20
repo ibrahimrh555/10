@@ -10,7 +10,7 @@ describe("exploration locale", () => {
   it("filtre le format", () => expect(filterGames(mockGames, "", { ...all, formats: ["7v7"] }).map((g) => g.id)).toEqual(["terrain-al-amal"]));
   it("filtre les matchs gratuits", () => expect(filterGames(mockGames, "", { ...all, freeOnly: true }).every((g) => g.price === 0)).toBe(true));
   it("filtre les places disponibles", () => expect(filterGames(mockGames, "", { ...all, availableOnly: true }).every((g) => g.participantsCount < g.capacity)).toBe(true));
-  it("réinitialise vers les résultats par défaut", () => expect(filterGames(mockGames, "", DEFAULT_EXPLORE_FILTERS).map((g) => g.id)).toEqual(["club-atlas"]));
+  it("réinitialise vers les résultats par défaut", () => expect(filterGames(mockGames, "", DEFAULT_EXPLORE_FILTERS).map((g) => g.id)).toEqual(mockGames.map((game) => game.id)));
   it("expose un état vide après filtres", () => expect(filterGames(mockGames, "introuvable", all)).toEqual([]));
 });
 

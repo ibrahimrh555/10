@@ -12,7 +12,7 @@ export const palette = {
   neutral400: "#AEB8B3",
   neutral200: "#E2E6E3",
   yellow500: "#FFC72C",
+  lime500: "#C5E02A",
   red500: "#FF3B3F",
   transparent: "transparent",
 } as const;
-

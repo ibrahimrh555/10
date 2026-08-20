@@ -2,7 +2,7 @@ import type { MatchFormat, MatchPreview } from "../../mocks/games";
 
 export type MatchPeriod = "today" | "tomorrow" | "week" | "all";
 export type ExploreFilters = { city: string; period: MatchPeriod; formats: MatchFormat[]; freeOnly: boolean; availableOnly: boolean };
-export const DEFAULT_EXPLORE_FILTERS: ExploreFilters = { city: "Errachidia", period: "today", formats: [], freeOnly: false, availableOnly: false };
+export const DEFAULT_EXPLORE_FILTERS: ExploreFilters = { city: "", period: "all", formats: [], freeOnly: false, availableOnly: false };
 
 export function filterGames(games: MatchPreview[], query: string, filters: ExploreFilters, now = new Date("2026-08-17T12:00:00+01:00")) {
   const normalized = query.trim().toLocaleLowerCase("fr");

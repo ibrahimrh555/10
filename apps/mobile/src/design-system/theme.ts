@@ -7,6 +7,7 @@ export const theme = {
     background: palette.ivory50,
     surface: palette.white,
     surfaceBrand: palette.green900,
+    bottomNavigationActive: palette.lime500,
     textPrimary: palette.green950,
     textSecondary: palette.neutral600,
     textInverse: palette.white,
